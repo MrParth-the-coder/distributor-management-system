@@ -150,18 +150,19 @@ Through this project, I gained practical experience in:
 
 ## 📸 Screenshots
 
-```markdown
-<h3>Login Page</h3>
-<img src="screenshots/l.png" width="800">
 
-<h3>Dashboard</h3>
-<img src="screenshots/dashboard.png" width="800">
+## 📸 Screenshots
 
-<h3>Profile Management</h3>
-<img src="screenshots/profile.png" width="800">
-```
+<h3>🔐 Login Page</h3>
+<img src="screenshots/login.png" width="900">
 
----
+<h3>📊 Dashboard</h3>
+<img src="screenshots/dashboard.png" width="900">
+
+<h3>👤 Profile Management</h3>
+<img src="screenshots/profile.png" width="900">
+
+
 
 ## ⚙️ Installation & Setup
 
