@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Distributor Registration{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="glass-card p-4 p-md-5 mb-5 fade-in">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-corp">Register Account</h2>
+        <p class="text-muted-corp">Create a new distributor account on the platform</p>
+      </div>
+
+      <form method="post" enctype="multipart/form-data" class="needs-validation" id="registerForm" novalidate>
+        {% csrf_token %}
+        
+        <h5 class="fw-bold mb-3 border-bottom pb-2 text-primary">Personal Details</h5>
+        
+        <div class="mb-3">
+          <label for="username" class="form-label text-corp fw-semibold">Full Name *</label>
+          <input type="text" class="form-control bg-transparent text-corp" id="username" name="username" required pattern="[A-Za-z\s]{3,}" title="Name must only contain letters and be at least 3 characters long">
+          <div class="invalid-feedback">Please enter a valid name (at least 3 characters, letters only).</div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label text-corp fw-semibold">Email Address *</label>
+            <input type="email" class="form-control bg-transparent text-corp" id="email" name="email" required>
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="phone" class="form-label text-corp fw-semibold">Phone Number *</label>
+            <input type="tel" class="form-control bg-transparent text-corp" id="phone" name="phone" pattern="[0-9]{10}" required title="Phone number must be exactly 10 digits">
+            <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+          </div>
+        </div>
+
+        <h5 class="fw-bold my-4 border-bottom pb-2 text-primary">Company & Location</h5>
+
+        <div class="mb-3">
+          <label for="company_name" class="form-label text-corp fw-semibold">Company Name</label>
+          <input type="text" class="form-control bg-transparent text-corp" id="company_name" name="company_name">
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label text-corp fw-semibold">Street Address</label>
+          <input type="text" class="form-control bg-transparent text-corp" id="address" name="address">
+        </div>
+
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            <label for="city" class="form-label text-corp fw-semibold">City</label>
+            <input type="text" class="form-control bg-transparent text-corp" id="city" name="city">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="state" class="form-label text-corp fw-semibold">State</label>
+            <input type="text" class="form-control bg-transparent text-corp" id="state" name="state">
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="pincode" class="form-label text-corp fw-semibold">Pincode</label>
+            <input type="text" class="form-control bg-transparent text-corp" id="pincode" name="pincode" pattern="[0-9]{6}" title="Pincode must be exactly 6 digits">
+            <div class="invalid-feedback">Must be 6 digits.</div>
+          </div>
+        </div>
+
+        <h5 class="fw-bold my-4 border-bottom pb-2 text-primary">Profile Picture & Security</h5>
+
+        <div class="mb-3">
+          <label for="profile_image" class="form-label text-corp fw-semibold">Upload Profile Image</label>
+          <input type="file" class="form-control bg-transparent text-corp" id="profile_image" name="profile_image" accept=".jpg,.jpeg,.png" onchange="previewImage(event)">
+          <div class="form-text text-muted-corp">Supported formats: JPG, JPEG, PNG. Max size: 2MB.</div>
+          
+          <div class="mt-3 text-center d-none" id="previewContainer">
+            <p class="text-corp fw-semibold mb-1">Image Preview:</p>
+            <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+          </div>
+        </div>
+
+        <div class="mb-3 position-relative">
+          <label for="password" class="form-label text-corp fw-semibold">Password *</label>
+          <div class="input-group">
+            <input type="password" class="form-control bg-transparent text-corp" id="password" name="password" required pattern="^(?=.*[A-Z])(?=.*[\W_]).{8,}$" minlength="8" title="Password must be at least 8 characters long, contain at least one Capital letter and one Special character">
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('password', this)">Show</button>
+            <div class="invalid-feedback">Password must be at least 8 characters long, contain a Capital letter, and a Special character.</div>
+          </div>
+          
+          <!-- Password Strength Meter -->
+          <div class="mt-2">
+            <div class="progress" style="height: 6px;">
+              <div id="pwStrengthBar" class="progress-bar progress-glow" role="progressbar" style="width: 0%"></div>
+            </div>
+            <div class="d-flex justify-content-between mt-1">
+              <span class="small text-muted-corp">Password Strength:</span>
+              <span id="pwStrength" class="small fw-bold text-danger">Weak</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="c_password" class="form-label text-corp fw-semibold">Confirm Password *</label>
+          <div class="input-group">
+            <input type="password" class="form-control bg-transparent text-corp" id="c_password" name="c_password" required>
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('c_password', this)">Show</button>
+            <div class="invalid-feedback" id="c_password_feedback">Passwords must match.</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 btn-anim d-flex align-items-center justify-content-center" id="submitBtn">
+          <span id="btnText">Register Account</span>
+          <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" id="btnSpinner"></span>
+        </button>
+
+        <div class="mt-3 text-center">
+          <a href="{% url 'login' %}" class="text-primary text-decoration-none">Already have an account? Login here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Handle profile image client-side preview
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+      const output = document.getElementById('imagePreview');
+      output.src = reader.result;
+      document.getElementById('previewContainer').classList.remove('d-none');
+    };
+    if(event.target.files[0]) {
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  }
+
+  // Toggle Password visibility
+  function togglePasswordVisibility(fieldId, btn) {
+    const field = document.getElementById(fieldId);
+    if (field.type === "password") {
+      field.type = "text";
+      btn.textContent = "Hide";
+    } else {
+      field.type = "password";
+      btn.textContent = "Show";
+    }
+  }
+
+  // Bootstrap custom form validation and loaders
+  (function () {
+    'use strict'
+    const form = document.getElementById('registerForm');
+    form.addEventListener('submit', function (event) {
+      const password = document.getElementById('password');
+      const confirm = document.getElementById('c_password');
+      const confirmFeedback = document.getElementById('c_password_feedback');
+
+      if (password.value !== confirm.value) {
+        confirm.setCustomValidity('Passwords do not match.');
+        confirmFeedback.textContent = 'Passwords do not match.';
+      } else {
+        confirm.setCustomValidity('');
+      }
+
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        // Show loading spinner
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('btnText').textContent = "Registering...";
+        document.getElementById('btnSpinner').classList.remove('d-none');
+      }
+      form.classList.add('was-validated');
+    }, false);
+  })();
+</script>
+{% endblock %}

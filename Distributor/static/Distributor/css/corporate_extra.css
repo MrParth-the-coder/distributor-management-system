@@ -1,0 +1,24 @@
+/* Extra corporate styling (kept separate for easy overrides) */
+body{
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,.25), rgba(255,255,255,0)),
+              radial-gradient(900px 500px at 90% 20%, rgba(0,194,255,.25), rgba(0,194,255,0));
+  background-color: #f6f8fb;
+}
+[data-theme='dark'] body{
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,.08), rgba(255,255,255,0)),
+              radial-gradient(900px 500px at 90% 20%, rgba(0,194,255,.12), rgba(0,194,255,0));
+  background-color: #0b1220;
+}
+.nav-link{
+  opacity:.9;
+  transition: opacity .2s ease;
+}
+.nav-link:hover{opacity:1;}
+.card-glass{
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.16);
+}
+

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Distributors{% endblock %}
+
+{% block content %}
+<div class="glass-card p-4 p-md-5 mb-5 fade-in">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="fw-bold text-corp mb-1">Search Distributors</h2>
+      <p class="text-muted-corp mb-0">Lookup registered active distributors on the network</p>
+    </div>
+    <a href="{% url 'profile' %}" class="btn btn-outline-primary btn-sm">Back to Dashboard</a>
+  </div>
+
+  <!-- Search Filter Form -->
+  <form method="get" class="row g-3 mb-4">
+    <!-- Preserve sorting parameters -->
+    <input type="hidden" name="sort" value="{{ sort_by }}">
+    <input type="hidden" name="order" value="{{ order }}">
+
+    <div class="col-md-6">
+      <div class="input-group">
+        <span class="input-group-text bg-transparent text-muted-corp">
+          <svg style="width:16px; height:16px; fill:currentColor;" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </span>
+        <input type="text" name="q" class="form-control bg-transparent text-corp" placeholder="Search criteria..." value="{{ query }}">
+      </div>
+    </div>
+    <div class="col-md-3">
+      <select name="field" class="form-select bg-transparent text-corp">
+        <option value="all" {% if search_field == 'all' %}selected{% endif %}>All Fields</option>
+        <option value="name" {% if search_field == 'name' %}selected{% endif %}>Distributor Name</option>
+        <option value="email" {% if search_field == 'email' %}selected{% endif %}>Email Address</option>
+        <option value="phone" {% if search_field == 'phone' %}selected{% endif %}>Phone Number</option>
+        <option value="company" {% if search_field == 'company' %}selected{% endif %}>Company Name</option>
+      </select>
+    </div>
+    <div class="col-md-3 d-grid">
+      <button type="submit" class="btn btn-primary btn-anim">Query Database</button>
+    </div>
+  </form>
+
+  <!-- Results Table -->
+  <div class="table-responsive table-glass">
+    <table class="table table-hover text-corp align-middle mb-0">
+      <thead class="table-light bg-opacity-25">
+        <tr>
+          <th>
+            <a href="?q={{ query }}&field={{ search_field }}&sort=username&order={% if sort_by == 'username' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-corp fw-bold text-decoration-none">
+              Name
+              {% if sort_by == 'username' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>
+            <a href="?q={{ query }}&field={{ search_field }}&sort=email&order={% if sort_by == 'email' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-corp fw-bold text-decoration-none">
+              Email
+              {% if sort_by == 'email' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>Phone</th>
+          <th>
+            <a href="?q={{ query }}&field={{ search_field }}&sort=company_name&order={% if sort_by == 'company_name' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-corp fw-bold text-decoration-none">
+              Company
+              {% if sort_by == 'company_name' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th>Location</th>
+          <th>
+            <a href="?q={{ query }}&field={{ search_field }}&sort=registration_date&order={% if sort_by == 'registration_date' and order == 'asc' %}desc{% else %}asc{% endif %}" class="text-corp fw-bold text-decoration-none">
+              Registered Date
+              {% if sort_by == 'registration_date' %}
+                {% if order == 'asc' %}▲{% else %}▼{% endif %}
+              {% endif %}
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dist in page_obj %}
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                {% if dist.profile_image %}
+                  <img src="{{ dist.profile_image.url }}" alt="avatar" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                {% else %}
+                  <div class="rounded-circle bg-secondary bg-opacity-20 d-flex align-items-center justify-content-center text-corp fw-bold" style="width: 32px; height: 32px; font-size: 11px;">
+                    {{ dist.username|slice:":1"|upper }}
+                  </div>
+                {% endif %}
+                <span class="fw-semibold">{{ dist.username }}</span>
+              </div>
+            </td>
+            <td><code>{{ dist.email }}</code></td>
+            <td>{{ dist.phone|default:"N/A" }}</td>
+            <td>{{ dist.company_name|default:"—" }}</td>
+            <td>{{ dist.city|default:"" }}{% if dist.city and dist.state %}, {% endif %}{{ dist.state|default:"" }}</td>
+            <td class="small">{{ dist.registration_date|date:"Y-m-d H:i" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted-corp">
+              No matching distributors found in active records.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Control -->
+  {% if page_obj.has_other_pages %}
+    <nav class="mt-4 d-flex justify-content-center">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ query }}&field={{ search_field }}&sort={{ sort_by }}&order={{ order }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}&q={{ query }}&field={{ search_field }}&sort={{ sort_by }}&order={{ order }}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ query }}&field={{ search_field }}&sort={{ sort_by }}&order={{ order }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP Code{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5 col-xl-4">
+    <div class="glass-card p-4 p-md-5 mt-4 fade-in">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-corp">Verify OTP</h2>
+        <p class="text-muted-corp">Enter the 6-digit verification code sent to your registered email address.</p>
+        <span class="badge bg-light text-dark">{{ request.session.reset_email }}</span>
+      </div>
+
+      <form method="post" class="needs-validation" id="otpForm" novalidate>
+        {% csrf_token %}
+
+        <div class="mb-4">
+          <label for="otp" class="form-label text-corp fw-semibold">6-Digit Verification Code</label>
+          <input type="text" name="otp" class="form-control text-center bg-transparent text-corp fs-4 fw-bold letter-spacing-lg" id="otp" required pattern="[0-9]{6}" maxlength="6" placeholder="000000" autofocus>
+          <div class="invalid-feedback">Please enter a valid 6-digit numeric OTP code.</div>
+          <div class="form-text text-muted-corp text-center mt-2">The OTP will expire in 10 minutes.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 btn-anim d-flex align-items-center justify-content-center" id="submitBtn">
+          <span id="btnText">Verify Code</span>
+          <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" id="btnSpinner"></span>
+        </button>
+
+        <div class="mt-4 text-center">
+          <a href="{% url 'forgot_password' %}" class="text-primary text-decoration-none small">Request a new code</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    'use strict'
+    const form = document.getElementById('otpForm');
+    form.addEventListener('submit', function (event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('btnText').textContent = "Verifying...";
+        document.getElementById('btnSpinner').classList.remove('d-none');
+      }
+      form.classList.add('was-validated');
+    }, false);
+  })();
+</script>
+{% endblock %}
