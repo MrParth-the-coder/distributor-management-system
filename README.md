@@ -150,10 +150,8 @@ Through this project, I gained practical experience in:
 
 ## 📸 Screenshots
 
-> Add screenshots of your Login Page, Registration Page, Dashboard, and Profile Management Page here.
-
 ```markdown
-![Login Page](screenshots/login.png)
+![Login Page](screenshots/l.png)
 
 ![Dashboard](screenshots/dashboard.png)
 
