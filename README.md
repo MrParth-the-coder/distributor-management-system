@@ -151,11 +151,14 @@ Through this project, I gained practical experience in:
 ## 📸 Screenshots
 
 ```markdown
-![Login Page](screenshots/l.png)
+<h3>Login Page</h3>
+<img src="screenshots/l.png" width="800">
 
-![Dashboard](screenshots/dashboard.png)
+<h3>Dashboard</h3>
+<img src="screenshots/dashboard.png" width="800">
 
-![Profile Page](screenshots/profile.png)
+<h3>Profile Management</h3>
+<img src="screenshots/profile.png" width="800">
 ```
 
 ---
